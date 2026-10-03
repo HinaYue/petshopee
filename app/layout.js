@@ -1,8 +1,8 @@
 import './globals.css'
-export const metadata = { title: 'Pet Shop / Veterinary Clinic' }
+export const metadata = { title: 'Pet Shop Management System' }
 export default function RootLayout({ children }) {
   return (
-    <html>
+    <html lang="en">
       <body>{children}</body>
     </html>
   )

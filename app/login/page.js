@@ -2,6 +2,7 @@ import { currentUser } from '@/lib/auth'
 import { login } from '../actions'
 import { db } from '@/lib/db'
 import { redirect } from 'next/navigation'
+
 export default async function Page({ searchParams }) {
   if (await currentUser()) redirect('/dashboard')
   const { count } = await db()
@@ -10,19 +11,31 @@ export default async function Page({ searchParams }) {
   if (!count) redirect('/setup')
   const q = await searchParams
   return (
-    <div className="login card">
-      <h1>Login</h1>
-      {q.error && <div className="msg">{q.error}</div>}
-      <form action={login} className="form">
-        <input name="username" placeholder="Username" required />
-        <input
-          name="password"
-          type="password"
-          placeholder="Password"
-          required
-        />
-        <button className="btn">Login</button>
-      </form>
+    <div className="login-page">
+      <div className="login-box">
+        <div className="login-logo">🐾</div>
+        <h1>Pet Shop Management System</h1>
+        <p>Sign in to continue</p>
+        {q.error && <div className="alert alert-error">{q.error}</div>}
+        <form action={login}>
+          <div className="form-group">
+            <label>Username</label>
+            <input name="username" required autoComplete="username" />
+          </div>
+          <div className="form-group">
+            <label>Password</label>
+            <input
+              type="password"
+              name="password"
+              required
+              autoComplete="current-password"
+            />
+          </div>
+          <button className="btn btn-primary" type="submit">
+            Login
+          </button>
+        </form>
+      </div>
     </div>
   )
 }

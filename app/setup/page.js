@@ -1,6 +1,7 @@
 import { setupAdmin } from '../actions'
 import { db } from '@/lib/db'
 import { redirect } from 'next/navigation'
+
 export default async function Page({ searchParams }) {
   const { count } = await db()
     .from('users')
@@ -8,21 +9,30 @@ export default async function Page({ searchParams }) {
   if (count) redirect('/login')
   const q = await searchParams
   return (
-    <div className="login card">
-      <h1>Create First Administrator</h1>
-      <p className="muted">This page works only while there are no accounts.</p>
-      {q.error && <div className="msg">{q.error}</div>}
-      <form action={setupAdmin} className="form">
-        <input name="full_name" placeholder="Full name" required />
-        <input name="username" placeholder="Username" required />
-        <input
-          name="password"
-          type="password"
-          placeholder="Password (6+ characters)"
-          required
-        />
-        <button className="btn">Create Administrator</button>
-      </form>
+    <div className="login-page">
+      <div className="login-box">
+        <div className="login-logo">🔐</div>
+        <h1>Create Administrator</h1>
+        <p>First-time setup</p>
+        {q.error && <div className="alert alert-error">{q.error}</div>}
+        <form action={setupAdmin}>
+          <div className="form-group">
+            <label>Full Name</label>
+            <input name="full_name" required />
+          </div>
+          <div className="form-group">
+            <label>Username</label>
+            <input name="username" required />
+          </div>
+          <div className="form-group">
+            <label>Password</label>
+            <input type="password" name="password" required />
+          </div>
+          <button className="btn btn-primary" type="submit">
+            Create Administrator
+          </button>
+        </form>
+      </div>
     </div>
   )
 }
