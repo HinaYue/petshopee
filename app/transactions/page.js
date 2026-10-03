@@ -1,2 +1,37 @@
-import Shell from '@/components/Shell';import {requireUser} from '@/lib/auth';import {db} from '@/lib/db';import Link from 'next/link'
-export default async function Page(){const u=await requireUser();const {data:r=[]}=await db().from('v_sales_summary').select('*').order('sale_date',{ascending:false});return <Shell user={u}><div className="card table"><h1>Transactions</h1><table><tbody>{r.map(x=><tr key={x.sale_id}><td>{new Date(x.sale_date).toLocaleString()}</td><td>{x.invoice_number}</td><td>{x.customer_name}</td><td>{x.service_type}</td><td>{x.cashier}</td><td>₱{Number(x.total_amount).toFixed(2)}</td><td><Link className="btn" href={'/receipt/'+x.sale_id}>Receipt</Link></td></tr>)}</tbody></table></div></Shell>}
+import Shell from '@/components/Shell'
+import { requireUser } from '@/lib/auth'
+import { db } from '@/lib/db'
+import Link from 'next/link'
+export default async function Page() {
+  const u = await requireUser()
+  const { data: r = [] } = await db()
+    .from('v_sales_summary')
+    .select('*')
+    .order('sale_date', { ascending: false })
+  return (
+    <Shell user={u}>
+      <div className="card table">
+        <h1>Transactions</h1>
+        <table>
+          <tbody>
+            {r.map(x => (
+              <tr key={x.sale_id}>
+                <td>{new Date(x.sale_date).toLocaleString()}</td>
+                <td>{x.invoice_number}</td>
+                <td>{x.customer_name}</td>
+                <td>{x.service_type}</td>
+                <td>{x.cashier}</td>
+                <td>₱{Number(x.total_amount).toFixed(2)}</td>
+                <td>
+                  <Link className="btn" href={'/receipt/' + x.sale_id}>
+                    Receipt
+                  </Link>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </Shell>
+  )
+}

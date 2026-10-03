@@ -1,2 +1,59 @@
-import Shell from '@/components/Shell';import {requireUser} from '@/lib/auth';import {db} from '@/lib/db';import {addConfinement,discharge} from '../actions'
-export default async function Page(){const u=await requireUser(),D=db();const [{data:p=[]},{data:c=[]}]=await Promise.all([D.from('pets').select('pet_id,pet_name,customer_id'),D.from('v_current_confinement').select('*')]);return <Shell user={u}><div className="card"><h1>Confinement</h1><form action={addConfinement} className="form"><select name="pet_id" required><option value="">Pet</option>{p.map(x=><option key={x.pet_id} value={x.pet_id}>{x.pet_name}</option>)}</select><input name="customer_id" placeholder="Owner ID (shown in Owners)" required/><input name="expected_discharge_date" type="datetime-local"/><input name="kennel_cage" placeholder="Kennel/Cage"/><textarea name="reason" placeholder="Reason" required/><textarea name="veterinary_notes" placeholder="Veterinary notes"/><button className="btn">Register Confinement</button></form></div><div className="card table"><table><tbody>{c.map(x=><tr key={x.confinement_id}><td>{x.pet_name}</td><td>{x.owner_name}</td><td>{x.status}</td><td>{x.kennel_cage}</td><td><form action={discharge}><input type="hidden" name="id" value={x.confinement_id}/><button className="btn">Discharge</button></form></td></tr>)}</tbody></table></div></Shell>}
+import Shell from '@/components/Shell'
+import { requireUser } from '@/lib/auth'
+import { db } from '@/lib/db'
+import { addConfinement, discharge } from '../actions'
+export default async function Page() {
+  const u = await requireUser(),
+    D = db()
+  const [{ data: p = [] }, { data: c = [] }] = await Promise.all([
+    D.from('pets').select('pet_id,pet_name,customer_id'),
+    D.from('v_current_confinement').select('*')
+  ])
+  return (
+    <Shell user={u}>
+      <div className="card">
+        <h1>Confinement</h1>
+        <form action={addConfinement} className="form">
+          <select name="pet_id" required>
+            <option value="">Pet</option>
+            {p.map(x => (
+              <option key={x.pet_id} value={x.pet_id}>
+                {x.pet_name}
+              </option>
+            ))}
+          </select>
+          <input
+            name="customer_id"
+            placeholder="Owner ID (shown in Owners)"
+            required
+          />
+          <input name="expected_discharge_date" type="datetime-local" />
+          <input name="kennel_cage" placeholder="Kennel/Cage" />
+          <textarea name="reason" placeholder="Reason" required />
+          <textarea name="veterinary_notes" placeholder="Veterinary notes" />
+          <button className="btn">Register Confinement</button>
+        </form>
+      </div>
+      <div className="card table">
+        <table>
+          <tbody>
+            {c.map(x => (
+              <tr key={x.confinement_id}>
+                <td>{x.pet_name}</td>
+                <td>{x.owner_name}</td>
+                <td>{x.status}</td>
+                <td>{x.kennel_cage}</td>
+                <td>
+                  <form action={discharge}>
+                    <input type="hidden" name="id" value={x.confinement_id} />
+                    <button className="btn">Discharge</button>
+                  </form>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </Shell>
+  )
+}

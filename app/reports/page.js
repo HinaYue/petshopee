@@ -1,2 +1,50 @@
-import Shell from '@/components/Shell';import {requireAdmin} from '@/lib/auth';import {db} from '@/lib/db'
-export default async function Page({searchParams}){const u=await requireAdmin(),q=await searchParams;const today=new Date().toISOString().slice(0,10),start=q.start||today,end=q.end||today;const {data:r=[]}=await db().from('v_sales_summary').select('*').gte('sale_date',start+'T00:00:00Z').lte('sale_date',end+'T23:59:59Z').eq('status','Completed').order('sale_date');const total=r.reduce((a,x)=>a+Number(x.total_amount),0);return <Shell user={u}><div className="card no-print"><h1>Sales Report</h1><form className="form"><input type="date" name="start" defaultValue={start}/><input type="date" name="end" defaultValue={end}/><button className="btn">Generate Report</button></form><p>To print: press Ctrl+P after generating.</p></div><div className="card table"><h2>{start} to {end}</h2><h3>Total Sales: ₱{total.toFixed(2)}</h3><table><tbody>{r.map(x=><tr key={x.sale_id}><td>{x.invoice_number}</td><td>{x.customer_name}</td><td>{x.service_type}</td><td>{x.cashier}</td><td>₱{Number(x.total_amount).toFixed(2)}</td></tr>)}</tbody></table></div></Shell>}
+import Shell from '@/components/Shell'
+import { requireAdmin } from '@/lib/auth'
+import { db } from '@/lib/db'
+export default async function Page({ searchParams }) {
+  const u = await requireAdmin(),
+    q = await searchParams
+  const today = new Date().toISOString().slice(0, 10),
+    start = q.start || today,
+    end = q.end || today
+  const { data: r = [] } = await db()
+    .from('v_sales_summary')
+    .select('*')
+    .gte('sale_date', start + 'T00:00:00Z')
+    .lte('sale_date', end + 'T23:59:59Z')
+    .eq('status', 'Completed')
+    .order('sale_date')
+  const total = r.reduce((a, x) => a + Number(x.total_amount), 0)
+  return (
+    <Shell user={u}>
+      <div className="card no-print">
+        <h1>Sales Report</h1>
+        <form className="form">
+          <input type="date" name="start" defaultValue={start} />
+          <input type="date" name="end" defaultValue={end} />
+          <button className="btn">Generate Report</button>
+        </form>
+        <p>To print: press Ctrl+P after generating.</p>
+      </div>
+      <div className="card table">
+        <h2>
+          {start} to {end}
+        </h2>
+        <h3>Total Sales: ₱{total.toFixed(2)}</h3>
+        <table>
+          <tbody>
+            {r.map(x => (
+              <tr key={x.sale_id}>
+                <td>{x.invoice_number}</td>
+                <td>{x.customer_name}</td>
+                <td>{x.service_type}</td>
+                <td>{x.cashier}</td>
+                <td>₱{Number(x.total_amount).toFixed(2)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </Shell>
+  )
+}

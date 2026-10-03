@@ -1,2 +1,52 @@
-import Shell from '@/components/Shell';import {requireUser} from '@/lib/auth';import {db} from '@/lib/db'
-export default async function Page({searchParams}){const u=await requireUser(),D=db(),q=await searchParams;const today=new Date().toISOString().slice(0,10),start=q.start||today,end=q.end||today;const from=start+'T00:00:00.000Z',to=end+'T23:59:59.999Z';const {data:sales=[]}=await D.from('sales').select('*').gte('sale_date',from).lte('sale_date',to).eq('status','Completed');const {data:conf=[]}=await D.from('confinements').select('*').gte('admission_date',from).lte('admission_date',to);const total=sales.reduce((a,x)=>a+Number(x.total_amount),0);return <Shell user={u}><div className="card"><h1>Dashboard</h1><form className="form no-print"><label>From<input type="date" name="start" defaultValue={start}/></label><label>To<input type="date" name="end" defaultValue={end}/></label><button className="btn">Show Performance</button></form></div><div className="grid"><div className="card stat">Sales<strong>₱{total.toFixed(2)}</strong></div><div className="card stat">Transactions<strong>{sales.length}</strong></div><div className="card stat">Confinements<strong>{conf.length}</strong></div></div></Shell>}
+import Shell from '@/components/Shell'
+import { requireUser } from '@/lib/auth'
+import { db } from '@/lib/db'
+export default async function Page({ searchParams }) {
+  const u = await requireUser(),
+    D = db(),
+    q = await searchParams
+  const today = new Date().toISOString().slice(0, 10),
+    start = q.start || today,
+    end = q.end || today
+  const from = start + 'T00:00:00.000Z',
+    to = end + 'T23:59:59.999Z'
+  const { data: sales = [] } = await D.from('sales')
+    .select('*')
+    .gte('sale_date', from)
+    .lte('sale_date', to)
+    .eq('status', 'Completed')
+  const { data: conf = [] } = await D.from('confinements')
+    .select('*')
+    .gte('admission_date', from)
+    .lte('admission_date', to)
+  const total = sales.reduce((a, x) => a + Number(x.total_amount), 0)
+  return (
+    <Shell user={u}>
+      <div className="card">
+        <h1>Dashboard</h1>
+        <form className="form no-print">
+          <label>
+            From
+            <input type="date" name="start" defaultValue={start} />
+          </label>
+          <label>
+            To
+            <input type="date" name="end" defaultValue={end} />
+          </label>
+          <button className="btn">Show Performance</button>
+        </form>
+      </div>
+      <div className="grid">
+        <div className="card stat">
+          Sales<strong>₱{total.toFixed(2)}</strong>
+        </div>
+        <div className="card stat">
+          Transactions<strong>{sales.length}</strong>
+        </div>
+        <div className="card stat">
+          Confinements<strong>{conf.length}</strong>
+        </div>
+      </div>
+    </Shell>
+  )
+}

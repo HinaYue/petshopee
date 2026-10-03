@@ -1,2 +1,96 @@
-import Shell from '@/components/Shell';import {requireUser} from '@/lib/auth';import {db} from '@/lib/db';import {addProduct} from '../actions'
-export default async function Page(){const u=await requireUser(),D=db();const [{data:p=[]},{data:c=[]},{data:s=[]}]=await Promise.all([D.from('v_product_inventory').select('*'),D.from('categories').select('*'),D.from('suppliers').select('*')]);return <Shell user={u}>{u.role==='Administrator'&&<div className="card"><h1>Add Product</h1><form action={addProduct} className="form"><input name="sku" placeholder="SKU" required/><input name="product_name" placeholder="Product" required/><select name="category_id" required><option value="">Category</option>{c.map(x=><option key={x.category_id} value={x.category_id}>{x.category_name}</option>)}</select><select name="supplier_id"><option value="">Supplier</option>{s.map(x=><option key={x.supplier_id} value={x.supplier_id}>{x.supplier_name}</option>)}</select><select name="unit">{['Piece','Box','Pack','Bottle','Bag','Can','Sachet','Tablet','Capsule','mL','Liter','Gram','Kilogram'].map(x=><option key={x}>{x}</option>)}</select><input name="cost_price" type="number" step=".01" placeholder="Cost"/><input name="selling_price" type="number" step=".01" placeholder="Selling price"/><input name="reorder_level" type="number" placeholder="Reorder level"/><button className="btn">Add Product</button></form></div>}<div className="card table"><h1>Products</h1><table><tbody>{p.map(x=><tr key={x.product_id}><td>{x.sku}</td><td>{x.product_name}</td><td>{x.category_name}</td><td>{x.quantity}</td><td>₱{Number(x.selling_price).toFixed(2)}</td></tr>)}</tbody></table></div></Shell>}
+import Shell from '@/components/Shell'
+import { requireUser } from '@/lib/auth'
+import { db } from '@/lib/db'
+import { addProduct } from '../actions'
+export default async function Page() {
+  const u = await requireUser(),
+    D = db()
+  const [{ data: p = [] }, { data: c = [] }, { data: s = [] }] =
+    await Promise.all([
+      D.from('v_product_inventory').select('*'),
+      D.from('categories').select('*'),
+      D.from('suppliers').select('*')
+    ])
+  return (
+    <Shell user={u}>
+      {u.role === 'Administrator' && (
+        <div className="card">
+          <h1>Add Product</h1>
+          <form action={addProduct} className="form">
+            <input name="sku" placeholder="SKU" required />
+            <input name="product_name" placeholder="Product" required />
+            <select name="category_id" required>
+              <option value="">Category</option>
+              {c.map(x => (
+                <option key={x.category_id} value={x.category_id}>
+                  {x.category_name}
+                </option>
+              ))}
+            </select>
+            <select name="supplier_id">
+              <option value="">Supplier</option>
+              {s.map(x => (
+                <option key={x.supplier_id} value={x.supplier_id}>
+                  {x.supplier_name}
+                </option>
+              ))}
+            </select>
+            <select name="unit">
+              {[
+                'Piece',
+                'Box',
+                'Pack',
+                'Bottle',
+                'Bag',
+                'Can',
+                'Sachet',
+                'Tablet',
+                'Capsule',
+                'mL',
+                'Liter',
+                'Gram',
+                'Kilogram'
+              ].map(x => (
+                <option key={x}>{x}</option>
+              ))}
+            </select>
+            <input
+              name="cost_price"
+              type="number"
+              step=".01"
+              placeholder="Cost"
+            />
+            <input
+              name="selling_price"
+              type="number"
+              step=".01"
+              placeholder="Selling price"
+            />
+            <input
+              name="reorder_level"
+              type="number"
+              placeholder="Reorder level"
+            />
+            <button className="btn">Add Product</button>
+          </form>
+        </div>
+      )}
+      <div className="card table">
+        <h1>Products</h1>
+        <table>
+          <tbody>
+            {p.map(x => (
+              <tr key={x.product_id}>
+                <td>{x.sku}</td>
+                <td>{x.product_name}</td>
+                <td>{x.category_name}</td>
+                <td>{x.quantity}</td>
+                <td>₱{Number(x.selling_price).toFixed(2)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </Shell>
+  )
+}

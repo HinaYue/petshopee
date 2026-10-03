@@ -1,2 +1,28 @@
-import { setupAdmin } from '../actions';import { db } from '@/lib/db';import { redirect } from 'next/navigation'
-export default async function Page({searchParams}){const {count}=await db().from('users').select('*',{count:'exact',head:true});if(count)redirect('/login');const q=await searchParams;return <div className="login card"><h1>Create First Administrator</h1><p className="muted">This page works only while there are no accounts.</p>{q.error&&<div className="msg">{q.error}</div>}<form action={setupAdmin} className="form"><input name="full_name" placeholder="Full name" required/><input name="username" placeholder="Username" required/><input name="password" type="password" placeholder="Password (6+ characters)" required/><button className="btn">Create Administrator</button></form></div>}
+import { setupAdmin } from '../actions'
+import { db } from '@/lib/db'
+import { redirect } from 'next/navigation'
+export default async function Page({ searchParams }) {
+  const { count } = await db()
+    .from('users')
+    .select('*', { count: 'exact', head: true })
+  if (count) redirect('/login')
+  const q = await searchParams
+  return (
+    <div className="login card">
+      <h1>Create First Administrator</h1>
+      <p className="muted">This page works only while there are no accounts.</p>
+      {q.error && <div className="msg">{q.error}</div>}
+      <form action={setupAdmin} className="form">
+        <input name="full_name" placeholder="Full name" required />
+        <input name="username" placeholder="Username" required />
+        <input
+          name="password"
+          type="password"
+          placeholder="Password (6+ characters)"
+          required
+        />
+        <button className="btn">Create Administrator</button>
+      </form>
+    </div>
+  )
+}
